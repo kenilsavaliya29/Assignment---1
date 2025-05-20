@@ -1,0 +1,79 @@
+{% extends "index.html" %}
+
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-decoration-underline mb-5">Risk Analysis</h2>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3>High-Risk Policyholders</h3>
+            {% if high_risk_policyholders %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Policyholder ID</th>
+                            <th>Name</th>
+                            <th>Risk Factors</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ph in high_risk_policyholders %}
+                            <tr>
+                                <td>{{ ph.policyholder_id }}</td>
+                                <td>{{ ph.name }}</td>
+                                <td>
+                                    <ul>
+                                        {% for factor in ph.risk_factors %}
+                                            <li>{{ factor }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No high-risk policyholders identified.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h3>Claims by Policy Type</h3>
+            {% if claims_by_policy %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Policy Type</th>
+                            <th>Total Claims</th>
+                            <th>Total Amount</th>
+                            <th>Approved Claims</th>
+                            <th>Approved Amount</th>
+                            <th>Pending Claims</th>
+                            <th>Rejected Claims</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for policy_type, stats in claims_by_policy.items() %}
+                            <tr>
+                                <td>{{ policy_type }}</td>
+                                <td>{{ stats.total_claims }}</td>
+                                <td>₹{{ "%.2f" | format(stats.total_amount) }}</td>
+                                <td>{{ stats.approved_claims }}</td>
+                                <td>₹{{ "%.2f" | format(stats.approved_amount) }}</td>
+                                <td>{{ stats.pending_claims }}</td>
+                                <td>{{ stats.rejected_claims }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No claims data available by policy type.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

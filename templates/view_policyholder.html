@@ -1,0 +1,133 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/policyholders">Policyholders</a></li>
+                <li class="breadcrumb-item active">{{ policyholder.name }}</li>
+            </ol>
+        </nav>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Policyholder Details</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>ID</th>
+                                <td>{{ policyholder.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Name</th>
+                                <td>{{ policyholder.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Age</th>
+                                <td>{{ policyholder.age }}</td>
+                            </tr>
+                            <tr>
+                                <th>Policy Type</th>
+                                <td>{{ policyholder.policy_type }}</td>
+                            </tr>
+                            <tr>
+                                <th>Sum Insured</th>
+                                <td>₹{{ "{:,.2f}".format(policyholder.sum_insured) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Registration Date</th>
+                                <td>{{ policyholder.registration_date }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Risk Assessment</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Claim Frequency:</strong> {{ claim_frequency }} claims in the last year</p>
+                                <p><strong>Claim Ratio:</strong> {{ "{:.2f}%".format(claim_ratio) }} of sum insured</p>
+                                
+                                {% if claim_frequency > 3 or claim_ratio > 80 %}
+                                <div class="alert alert-danger">
+                                    <strong>High Risk Policyholder</strong>
+                                    <ul class="mb-0">
+                                        {% if claim_frequency > 3 %}
+                                        <li>High claim frequency (> 3 claims in last year)</li>
+                                        {% endif %}
+                                        
+                                        {% if claim_ratio > 80 %}
+                                        <li>High claim ratio (> 80% of sum insured)</li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-success">
+                                    <strong>Normal Risk Level</strong>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4>Claims History</h4>
+                <a href="/claims/add" class="btn btn-primary">Add New Claim</a>
+            </div>
+            <div class="card-body">
+                {% if claims %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Claim ID</th>
+                                <th>Amount</th>
+                                <th>Reason</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for claim in claims %}
+                            <tr>
+                                <td>{{ claim.id[:8] }}...</td>
+                                <td>₹{{ "{:,.2f}".format(claim.claim_amount) }}</td>
+                                <td>{{ claim.reason }}</td>
+                                <td>{{ claim.claim_date }}</td>
+                                <td>
+                                    {% if claim.status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    {% elif claim.status == 'Approved' %}
+                                    <span class="badge bg-success">Approved</span>
+                                    {% elif claim.status == 'Rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="/claims/{{ claim.id }}" class="btn btn-sm btn-info">View</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    No claims found for this policyholder.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

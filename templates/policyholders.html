@@ -1,0 +1,49 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Policyholders</h2>
+            <a href="/policyholders/add" class="btn btn-success">Add New Policyholder</a>
+        </div>
+        
+        {% if policyholders %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Policy Type</th>
+                        <th>Sum Insured</th>
+                        <th>Registration Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for policyholder in policyholders %}
+                    <tr>
+                        <td>{{ policyholder.id[:8] }}...</td>
+                        <td>{{ policyholder.name }}</td>
+                        <td>{{ policyholder.age }}</td>
+                        <td>{{ policyholder.policy_type }}</td>
+                        <td>₹{{ "{:,.2f}".format(policyholder.sum_insured) }}</td>
+                        <td>{{ policyholder.registration_date }}</td>
+                        <td>
+                            <a href="/policyholders/{{ policyholder.id }}" class="btn btn-sm btn-info">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            No policyholders found. <a href="/policyholders/add">Add a policyholder</a> to get started.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

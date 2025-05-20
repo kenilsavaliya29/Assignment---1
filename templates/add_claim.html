@@ -1,0 +1,56 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h4>Add New Claim</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/claims/add">
+                    <div class="mb-3">
+                        <label for="policyholder_id" class="form-label">Select Policyholder</label>
+                        {% if policyholders %}
+                        <select class="form-select" id="policyholder_id" name="policyholder_id" required>
+                            <option value="" selected disabled>Choose a policyholder</option>
+                            {% for policyholder in policyholders %}
+                            <option value="{{ policyholder.id }}">{{ policyholder.name }} ({{ policyholder.policy_type }})</option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
+                        <div class="alert alert-danger">
+                            No policyholders found. <a href="/policyholders/add">Add a policyholder</a> first.
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="claim_amount" class="form-label">Claim Amount (₹)</label>
+                        <input type="number" class="form-control" id="claim_amount" name="claim_amount" min="1" step="0.01" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="reason" class="form-label">Claim Reason</label>
+                        <textarea class="form-control" id="reason" name="reason" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Initial Status</label>
+                        <select class="form-select" id="status" name="status" required>
+                            {% for status in claim_statuses %}
+                            <option value="{{ status }}" {% if status == 'Pending' %}selected{% endif %}>{{ status }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" {% if not policyholders %}disabled{% endif %}>Submit Claim</button>
+                        <a href="/claims" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

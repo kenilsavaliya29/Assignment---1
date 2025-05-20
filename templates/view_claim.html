@@ -1,0 +1,115 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/claims">Claims</a></li>
+                <li class="breadcrumb-item active">Claim Details</li>
+            </ol>
+        </nav>
+        
+        <div class="card">
+            <div class="card-header">
+                <h4>Claim Details</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Claim ID</th>
+                                <td>{{ claim.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Policyholder</th>
+                                <td>
+                                    {% if policyholder %}
+                                    <a href="/policyholders/{{ policyholder.id }}">{{ policyholder.name }}</a>
+                                    {% else %}
+                                    Unknown Policyholder
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Claim Amount</th>
+                                <td>₹{{ "{:,.2f}".format(claim.claim_amount) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Reason</th>
+                                <td>{{ claim.reason }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date Filed</th>
+                                <td>{{ claim.claim_date }}</td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td>
+                                    {% if claim.status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    {% elif claim.status == 'Approved' %}
+                                    <span class="badge bg-success">Approved</span>
+                                    {% elif claim.status == 'Rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        {% if policyholder %}
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5>Policyholder Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>Name</th>
+                                        <td>{{ policyholder.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Age</th>
+                                        <td>{{ policyholder.age }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Policy Type</th>
+                                        <td>{{ policyholder.policy_type }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Sum Insured</th>
+                                        <td>₹{{ "{:,.2f}".format(policyholder.sum_insured) }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Update Claim Status</h5>
+                            </div>
+                            <div class="card-body">
+                                <form method="POST" action="/claims/{{ claim.id }}/update-status">
+                                    <div class="mb-3">
+                                        <label for="status" class="form-label">New Status</label>
+                                        <select class="form-select" id="status" name="status">
+                                            {% for status in ['Pending', 'Approved', 'Rejected'] %}
+                                            <option value="{{ status }}" {% if status == claim.status %}selected{% endif %}>{{ status }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update Status</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

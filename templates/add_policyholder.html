@@ -1,0 +1,47 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h4>Register New Policyholder</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/policyholders/add">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="age" class="form-label">Age</label>
+                        <input type="number" class="form-control" id="age" name="age" min="1" max="120" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="policy_type" class="form-label">Policy Type</label>
+                        <select class="form-select" id="policy_type" name="policy_type" required>
+                            <option value="" selected disabled>Select a policy type</option>
+                            {% for policy_type in policy_types %}
+                            <option value="{{ policy_type }}">{{ policy_type }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="sum_insured" class="form-label">Sum Insured (₹)</label>
+                        <input type="number" class="form-control" id="sum_insured" name="sum_insured" min="1000" step="1000" required>
+                        <div class="form-text">Minimum coverage: ₹1,000</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Register Policyholder</button>
+                        <a href="/policyholders" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

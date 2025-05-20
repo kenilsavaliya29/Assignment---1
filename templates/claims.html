@@ -1,0 +1,62 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Insurance Claims</h2>
+            <a href="/claims/add" class="btn btn-success">Add New Claim</a>
+        </div>
+        
+        {% if claims %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Claim ID</th>
+                        <th>Policyholder</th>
+                        <th>Amount</th>
+                        <th>Reason</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for claim in claims %}
+                    <tr>
+                        <td>{{ claim.id[:8] }}...</td>
+                        <td>
+                            <!-- This would need to be modified to display policyholder name -->
+                            <a href="/policyholders/{{ claim.policyholder_id }}">
+                                {{ claim.policyholder_id[:8] }}...
+                            </a>
+                        </td>
+                        <td>₹{{ "{:,.2f}".format(claim.claim_amount) }}</td>
+                        <td>{{ claim.reason }}</td>
+                        <td>{{ claim.claim_date }}</td>
+                        <td>
+                            {% if claim.status == 'Pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                            {% elif claim.status == 'Approved' %}
+                            <span class="badge bg-success">Approved</span>
+                            {% elif claim.status == 'Rejected' %}
+                            <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/claims/{{ claim.id }}" class="btn btn-sm btn-info">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            No claims found. <a href="/claims/add">Add a claim</a> to get started.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
